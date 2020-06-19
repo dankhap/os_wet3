@@ -4,10 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/media/sf_SharedFolder-OS/HW3/os_wet3/ftp_template.cpp" "/media/sf_SharedFolder-OS/HW3/os_wet3/cmake-build-debug/CMakeFiles/ttftps.dir/ftp_template.cpp.o"
-  "/media/sf_SharedFolder-OS/HW3/os_wet3/logger.cpp" "/media/sf_SharedFolder-OS/HW3/os_wet3/cmake-build-debug/CMakeFiles/ttftps.dir/logger.cpp.o"
   "/media/sf_SharedFolder-OS/HW3/os_wet3/main.cpp" "/media/sf_SharedFolder-OS/HW3/os_wet3/cmake-build-debug/CMakeFiles/ttftps.dir/main.cpp.o"
-  "/media/sf_SharedFolder-OS/HW3/os_wet3/runnable.cpp" "/media/sf_SharedFolder-OS/HW3/os_wet3/cmake-build-debug/CMakeFiles/ttftps.dir/runnable.cpp.o"
   "/media/sf_SharedFolder-OS/HW3/os_wet3/server.cpp" "/media/sf_SharedFolder-OS/HW3/os_wet3/cmake-build-debug/CMakeFiles/ttftps.dir/server.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")

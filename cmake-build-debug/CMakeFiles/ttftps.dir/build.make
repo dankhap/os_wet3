@@ -70,22 +70,9 @@ CMakeFiles/ttftps.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ttftps.dir/main.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/sf_SharedFolder-OS/HW3/os_wet3/main.cpp -o CMakeFiles/ttftps.dir/main.cpp.s
 
-CMakeFiles/ttftps.dir/runnable.cpp.o: CMakeFiles/ttftps.dir/flags.make
-CMakeFiles/ttftps.dir/runnable.cpp.o: ../runnable.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/sf_SharedFolder-OS/HW3/os_wet3/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/ttftps.dir/runnable.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ttftps.dir/runnable.cpp.o -c /media/sf_SharedFolder-OS/HW3/os_wet3/runnable.cpp
-
-CMakeFiles/ttftps.dir/runnable.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ttftps.dir/runnable.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/sf_SharedFolder-OS/HW3/os_wet3/runnable.cpp > CMakeFiles/ttftps.dir/runnable.cpp.i
-
-CMakeFiles/ttftps.dir/runnable.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ttftps.dir/runnable.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/sf_SharedFolder-OS/HW3/os_wet3/runnable.cpp -o CMakeFiles/ttftps.dir/runnable.cpp.s
-
 CMakeFiles/ttftps.dir/server.cpp.o: CMakeFiles/ttftps.dir/flags.make
 CMakeFiles/ttftps.dir/server.cpp.o: ../server.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/sf_SharedFolder-OS/HW3/os_wet3/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/ttftps.dir/server.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/sf_SharedFolder-OS/HW3/os_wet3/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/ttftps.dir/server.cpp.o"
 	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ttftps.dir/server.cpp.o -c /media/sf_SharedFolder-OS/HW3/os_wet3/server.cpp
 
 CMakeFiles/ttftps.dir/server.cpp.i: cmake_force
@@ -96,51 +83,19 @@ CMakeFiles/ttftps.dir/server.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ttftps.dir/server.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/sf_SharedFolder-OS/HW3/os_wet3/server.cpp -o CMakeFiles/ttftps.dir/server.cpp.s
 
-CMakeFiles/ttftps.dir/logger.cpp.o: CMakeFiles/ttftps.dir/flags.make
-CMakeFiles/ttftps.dir/logger.cpp.o: ../logger.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/sf_SharedFolder-OS/HW3/os_wet3/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/ttftps.dir/logger.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ttftps.dir/logger.cpp.o -c /media/sf_SharedFolder-OS/HW3/os_wet3/logger.cpp
-
-CMakeFiles/ttftps.dir/logger.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ttftps.dir/logger.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/sf_SharedFolder-OS/HW3/os_wet3/logger.cpp > CMakeFiles/ttftps.dir/logger.cpp.i
-
-CMakeFiles/ttftps.dir/logger.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ttftps.dir/logger.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/sf_SharedFolder-OS/HW3/os_wet3/logger.cpp -o CMakeFiles/ttftps.dir/logger.cpp.s
-
-CMakeFiles/ttftps.dir/ftp_template.cpp.o: CMakeFiles/ttftps.dir/flags.make
-CMakeFiles/ttftps.dir/ftp_template.cpp.o: ../ftp_template.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/sf_SharedFolder-OS/HW3/os_wet3/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/ttftps.dir/ftp_template.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/ttftps.dir/ftp_template.cpp.o -c /media/sf_SharedFolder-OS/HW3/os_wet3/ftp_template.cpp
-
-CMakeFiles/ttftps.dir/ftp_template.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/ttftps.dir/ftp_template.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/sf_SharedFolder-OS/HW3/os_wet3/ftp_template.cpp > CMakeFiles/ttftps.dir/ftp_template.cpp.i
-
-CMakeFiles/ttftps.dir/ftp_template.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/ttftps.dir/ftp_template.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/sf_SharedFolder-OS/HW3/os_wet3/ftp_template.cpp -o CMakeFiles/ttftps.dir/ftp_template.cpp.s
-
 # Object files for target ttftps
 ttftps_OBJECTS = \
 "CMakeFiles/ttftps.dir/main.cpp.o" \
-"CMakeFiles/ttftps.dir/runnable.cpp.o" \
-"CMakeFiles/ttftps.dir/server.cpp.o" \
-"CMakeFiles/ttftps.dir/logger.cpp.o" \
-"CMakeFiles/ttftps.dir/ftp_template.cpp.o"
+"CMakeFiles/ttftps.dir/server.cpp.o"
 
 # External object files for target ttftps
 ttftps_EXTERNAL_OBJECTS =
 
 ttftps: CMakeFiles/ttftps.dir/main.cpp.o
-ttftps: CMakeFiles/ttftps.dir/runnable.cpp.o
 ttftps: CMakeFiles/ttftps.dir/server.cpp.o
-ttftps: CMakeFiles/ttftps.dir/logger.cpp.o
-ttftps: CMakeFiles/ttftps.dir/ftp_template.cpp.o
 ttftps: CMakeFiles/ttftps.dir/build.make
 ttftps: CMakeFiles/ttftps.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/media/sf_SharedFolder-OS/HW3/os_wet3/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable ttftps"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/media/sf_SharedFolder-OS/HW3/os_wet3/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable ttftps"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/ttftps.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

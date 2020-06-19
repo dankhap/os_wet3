@@ -123,60 +123,6 @@ ttftps/fast:
 	$(MAKE) -f CMakeFiles/ttftps.dir/build.make CMakeFiles/ttftps.dir/build
 .PHONY : ttftps/fast
 
-ftp_template.o: ftp_template.cpp.o
-
-.PHONY : ftp_template.o
-
-# target to build an object file
-ftp_template.cpp.o:
-	$(MAKE) -f CMakeFiles/ttftps.dir/build.make CMakeFiles/ttftps.dir/ftp_template.cpp.o
-.PHONY : ftp_template.cpp.o
-
-ftp_template.i: ftp_template.cpp.i
-
-.PHONY : ftp_template.i
-
-# target to preprocess a source file
-ftp_template.cpp.i:
-	$(MAKE) -f CMakeFiles/ttftps.dir/build.make CMakeFiles/ttftps.dir/ftp_template.cpp.i
-.PHONY : ftp_template.cpp.i
-
-ftp_template.s: ftp_template.cpp.s
-
-.PHONY : ftp_template.s
-
-# target to generate assembly for a file
-ftp_template.cpp.s:
-	$(MAKE) -f CMakeFiles/ttftps.dir/build.make CMakeFiles/ttftps.dir/ftp_template.cpp.s
-.PHONY : ftp_template.cpp.s
-
-logger.o: logger.cpp.o
-
-.PHONY : logger.o
-
-# target to build an object file
-logger.cpp.o:
-	$(MAKE) -f CMakeFiles/ttftps.dir/build.make CMakeFiles/ttftps.dir/logger.cpp.o
-.PHONY : logger.cpp.o
-
-logger.i: logger.cpp.i
-
-.PHONY : logger.i
-
-# target to preprocess a source file
-logger.cpp.i:
-	$(MAKE) -f CMakeFiles/ttftps.dir/build.make CMakeFiles/ttftps.dir/logger.cpp.i
-.PHONY : logger.cpp.i
-
-logger.s: logger.cpp.s
-
-.PHONY : logger.s
-
-# target to generate assembly for a file
-logger.cpp.s:
-	$(MAKE) -f CMakeFiles/ttftps.dir/build.make CMakeFiles/ttftps.dir/logger.cpp.s
-.PHONY : logger.cpp.s
-
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -203,33 +149,6 @@ main.s: main.cpp.s
 main.cpp.s:
 	$(MAKE) -f CMakeFiles/ttftps.dir/build.make CMakeFiles/ttftps.dir/main.cpp.s
 .PHONY : main.cpp.s
-
-runnable.o: runnable.cpp.o
-
-.PHONY : runnable.o
-
-# target to build an object file
-runnable.cpp.o:
-	$(MAKE) -f CMakeFiles/ttftps.dir/build.make CMakeFiles/ttftps.dir/runnable.cpp.o
-.PHONY : runnable.cpp.o
-
-runnable.i: runnable.cpp.i
-
-.PHONY : runnable.i
-
-# target to preprocess a source file
-runnable.cpp.i:
-	$(MAKE) -f CMakeFiles/ttftps.dir/build.make CMakeFiles/ttftps.dir/runnable.cpp.i
-.PHONY : runnable.cpp.i
-
-runnable.s: runnable.cpp.s
-
-.PHONY : runnable.s
-
-# target to generate assembly for a file
-runnable.cpp.s:
-	$(MAKE) -f CMakeFiles/ttftps.dir/build.make CMakeFiles/ttftps.dir/runnable.cpp.s
-.PHONY : runnable.cpp.s
 
 server.o: server.cpp.o
 
@@ -267,18 +186,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... ttftps"
 	@echo "... edit_cache"
-	@echo "... ftp_template.o"
-	@echo "... ftp_template.i"
-	@echo "... ftp_template.s"
-	@echo "... logger.o"
-	@echo "... logger.i"
-	@echo "... logger.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
-	@echo "... runnable.o"
-	@echo "... runnable.i"
-	@echo "... runnable.s"
 	@echo "... server.o"
 	@echo "... server.i"
 	@echo "... server.s"

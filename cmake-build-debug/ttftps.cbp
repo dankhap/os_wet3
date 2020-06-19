@@ -84,22 +84,10 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/media/sf_SharedFolder-OS/HW3/os_wet3/ftp_template.cpp">
-			<Option target="ttftps"/>
-		</Unit>
-		<Unit filename="/media/sf_SharedFolder-OS/HW3/os_wet3/logger.cpp">
-			<Option target="ttftps"/>
-		</Unit>
-		<Unit filename="/media/sf_SharedFolder-OS/HW3/os_wet3/logger.h">
-			<Option target="ttftps"/>
-		</Unit>
 		<Unit filename="/media/sf_SharedFolder-OS/HW3/os_wet3/main.cpp">
 			<Option target="ttftps"/>
 		</Unit>
-		<Unit filename="/media/sf_SharedFolder-OS/HW3/os_wet3/runnable.cpp">
-			<Option target="ttftps"/>
-		</Unit>
-		<Unit filename="/media/sf_SharedFolder-OS/HW3/os_wet3/runnable.h">
+		<Unit filename="/media/sf_SharedFolder-OS/HW3/os_wet3/packets.h">
 			<Option target="ttftps"/>
 		</Unit>
 		<Unit filename="/media/sf_SharedFolder-OS/HW3/os_wet3/server.cpp">

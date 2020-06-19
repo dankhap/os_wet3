@@ -1,6 +1,6 @@
 # Makefile for the smash program
 CXX = g++
-CPPFLAGS = -std=c++11 -Wall -Werror -pedantic-errors -DNDEBUG -pthread
+CPPFLAGS = -std=c++11 -Wall  -DNDEBUG -pthread
 CCLINK = $(CXX)
 
 SRCS = $(wildcard *.cpp)
@@ -11,8 +11,6 @@ RM = rm -f
 # Creating the  executable
 ttftps: $(OBJS)
 	$(CXX) -o $@ $^ $(CPPFLAGS)
-logger.o: logger.cpp $(DEPS)
-	$(CXX) -c -o $@ $< $(CPPFLAGS)
 
 # Cleaning old files before new make
 clean:
