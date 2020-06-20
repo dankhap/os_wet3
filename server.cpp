@@ -33,8 +33,7 @@ void Server::run() {
         if(write_req_len <= 0)
             continue;
         cout<<"got write request"<<endl;
-        Handler* handler = handlers[s.next];
-        packet::Ack* response = handler->process(s, packet);
+        packet::Ack* response = handlers[s.next]->process(s, packet);
         if(!response)
             continue;
         sendto(sock, (const char *)response, sizeof(*response),
