@@ -13,5 +13,6 @@ int State::reset() {
     next_block = 0;
     if(data != nullptr)
         delete data;
-    filename=""
+    filename="";
+    return 1;
 }

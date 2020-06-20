@@ -12,10 +12,12 @@ class State {
 public:
     State();
     int reset();
-private:
     Opcode next;
+
+private:
     unsigned int next_block;
     std::string filename;
+    std::string protocol;
     char* data;
 };
 
