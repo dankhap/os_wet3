@@ -1,6 +1,6 @@
 # Makefile for the smash program
 CXX = g++
-CPPFLAGS = -std=c++11 -Wall  -DNDEBUG -pthread
+CPPFLAGS = -std=c++11 -Wall -pedantic -Wall -DNDEBUG -pthread
 CCLINK = $(CXX)
 
 SRCS = $(wildcard *.cpp)

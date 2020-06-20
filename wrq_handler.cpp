@@ -13,7 +13,7 @@ STATUS WRQHandler::process(State &s, packet::Basic &p,packet::Ack & out_pack) {
     p.opcode = ntohs(p.opcode);
     if(p.opcode != Opcode::WRQ_OPCODE){
         cout<<"not the right opcode"<<endl;
-        return STATUS::ERROR;
+        return STATUS::OP_CODE_ERROR;
     }
     char name[MAX_PACK_SIZE];
     char protocol [MAX_PACK_SIZE];
@@ -29,5 +29,7 @@ STATUS WRQHandler::process(State &s, packet::Basic &p,packet::Ack & out_pack) {
         exit(1);
     }
     s.next = DATA_OPCODE;
+    out_pack.opcode = htons(Opcode::ACK_OPCODE);
+    out_pack.block_number = htons(s.ack_num);
     return STATUS::OK;
 }

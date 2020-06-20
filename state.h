@@ -16,7 +16,8 @@ public:
     State();
     int reset();
     Opcode next;
-    bool checkBlock(int block_num);
+    bool checkBlock(uint16_t block_num);
+    int ack_num;
 private:
     unsigned int next_block;
     std::string filename;

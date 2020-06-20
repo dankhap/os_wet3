@@ -4,7 +4,7 @@
 
 #include "state.h"
 
-State::State() :next(Opcode::WRQ_OPCODE), next_block(0), data(nullptr),curr_pack_len(0){
+State::State() :next(Opcode::WRQ_OPCODE), next_block(0), data(nullptr),curr_pack_len(0),ack_num(0){
 
 }
 
@@ -17,7 +17,7 @@ int State::reset() {
     return 1;
 }
 
-bool State::checkBlock(int block_num) {
+bool State::checkBlock(uint16_t block_num) {
     if(block_num != next_block +1){
         return false;
     }

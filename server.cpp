@@ -32,7 +32,6 @@ void Server::run() {
                 &addr_len);
         if(s.curr_pack_len <= 0)
             continue;
-        cout<<"got write request after first do"<< "data len"<<s.curr_pack_len<<endl;
         s.state = handlers[s.next]->process(s, packet,out);
         if(s.state != STATUS::OK)
             continue;
@@ -51,20 +50,16 @@ void Server::run() {
                     }
                     // TODO: Wait WAIT_FOR_PACKET_TIMEOUT to see if something appears
                     // for us at the socket (we are waiting for DATA)
-                    cout<<"prior to first data"<<" data len "<<s.curr_pack_len <<endl;
                     s.curr_pack_len = recvfrom(sock, &packet, MAX_PACK_SIZE, 0,
                                                  (struct sockaddr *) &client_aadr,
                                                  &addr_len);
-                    cout<<"after to first data"<<" data len "<<s.curr_pack_len <<endl;
 
                     if (s.curr_pack_len > 0)// TODO: if there was something at the socket and
                         // we are here not because of a timeout
                     {
                         // TODO: Read the DATA packet from the socket (at
                         // least we hope this is a DATA packet)
-                        cout<<"int write data"<<" data len "<<s.curr_pack_len <<endl;
                         s.state = handlers[s.next]->process(s, packet,out);
-                        printACK(out);
                     }
                     if (s.curr_pack_len < 0) // TODO: Time out expired while waiting for data
                     //to appear at the socket
@@ -78,24 +73,25 @@ void Server::run() {
                     }
                 }while (s.curr_pack_len < 0) ;// TODO: Continue while some socket was ready
                   //but recvfrom somehow failed to read the data
-                if (0) // TODO: We got something else but DATA
+                if (s.state == STATUS::OP_CODE_ERROR) // TODO: We got something else but DATA
                 {
                     // FATAL ERROR BAIL OUT
                 }
-                if (0) // TODO: The incoming block number is not what we have
+                if (s.state == STATUS::BLOCK_NUM_ERROR) // TODO: The incoming block number is not what we have
                  //expected, i.e. this is a DATA pkt but the block number
                  //in DATA was wrong (not last ACK’s block number + 1)
                 {
                      //FATAL ERROR BAIL OUT
                 }
-            }while (timeoutExpiredCount < NUMBER_OF_FAILURES);
-            // = 0;
-            //lastWriteSize = fwrite(...); // write next bulk of data
-            // TODO: send ACK packet to the client
-            // if recieved a smaller packet the 512, finish session
-            if(0) {
+            }while (timeoutExpiredCount < NUMBER_OF_FAILURES && (s.state!= STATUS::OK || s.state!= STATUS::LAST_PACK));
+            if(s.state == LAST_PACK){
                 session_in_progress = false;
             }
+            writeTofile(packet);
+            sendto(sock, (const char *)&out, sizeof(out),
+                   MSG_CONFIRM, (const struct sockaddr *) &client_aadr,
+                   addr_len);
+            printACK(out);
         }while (session_in_progress); // Have blocks left to be read from client (not end of transmission)
     }while (server_alive);
 
@@ -126,5 +122,19 @@ Server::Server(int port_num) {
 }
 
 void Server::printACK(packet::Ack pack) {
-    cout<<"OUT:ACK, "<<pack.block_number<<endl;
+    cout<<"OUT:ACK, "<<ntohs(pack.block_number)<<endl;
+}
+
+
+
+int Server::writeTofile(packet::Basic &packet) {
+    packet::DataPack data_pack = reinterpret_cast<const packet::Data &>(packet);
+    int block_number = ntohs(data_pack.block_number);
+
+   int size_of_data = s.curr_pack_len - 4;
+   cout<<"size of last data is "<< size_of_data<<endl;
+   int size_written = fwrite((void*)&data_pack.data,1,size_of_data,s.fd);
+
+   cout<<"WRITING: "<<size_written<<endl;
+    return size_written;
 }

@@ -10,26 +10,25 @@ using std::cout;
 using std::endl;
 
 STATUS DataHandler::process(State &s, packet::Basic &packet,packet::Ack& out_pack) {
-    packet::DataPack data_pack = reinterpret_cast<const packet::Data &>(packet);
 
-    int opcode = ntohs(packet.opcode);
-    if(opcode != Opcode::DATA_OPCODE){
+    packet::DataPack data_pack = reinterpret_cast<const packet::Data &>(packet);
+    data_pack.opcode = ntohs( data_pack.opcode);
+    if(data_pack.opcode != Opcode::DATA_OPCODE){
         cout<<"wrong OP"<<endl;
-        return STATUS::ERROR;
+        return STATUS::OP_CODE_ERROR;
     }
-    int block_number = ntohs(data_pack.block_number);
+    uint16_t block_number = ntohs(data_pack.block_number);
     if(!s.checkBlock(block_number)){
         cout<<"wrong block"<<endl;
-        return STATUS::ERROR;
+        return STATUS::BLOCK_NUM_ERROR;
     }
     cout<<"IN: DATA,"<<block_number<<", "<<s.curr_pack_len<<endl;
-
-    int size_of_data = s.curr_pack_len - 4;
-    int size_written = fwrite((void*)&packet,1,size_of_data,s.fd);
-
-    cout<<"WRITING: "<<size_written;
-
-    out_pack.block_number +=1;
+    s.ack_num+=1;
+    out_pack.opcode = htons(Opcode::ACK_OPCODE);
+    out_pack.block_number = htons(s.ack_num);
+    if(s.curr_pack_len < MAX_PACK_SIZE){
+        return STATUS::LAST_PACK;
+    }
 
     return STATUS::OK;
-};
+}
