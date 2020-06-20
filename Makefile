@@ -6,7 +6,7 @@ CCLINK = $(CXX)
 SRCS = $(wildcard *.cpp)
 OBJS = $(patsubst %.cpp,%.o,$(SRCS))
 DEPS = $(wildcard *.h)
-TARGET = smash
+TARGET = ttftps
 RM = rm -f
 # Creating the  executable
 ttftps: $(OBJS)
