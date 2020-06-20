@@ -30,7 +30,8 @@ void Server::run() {
         int write_req_len = recvfrom(sock, &packet, MAX_PACK_SIZE, 0,
                 (struct sockaddr *) &client_aadr,
                 &addr_len);
-
+        if(write_req_len <= 0)
+            continue;
         cout<<"got write request"<<endl;
         Handler* handler = handlers[s.next];
         packet::Basic* response = handler->process(s, packet);
