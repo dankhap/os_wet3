@@ -3,26 +3,33 @@
 //
 
 #include "data_handler.h"
+#include <iostream>
+#include <netinet/in.h>
 
-packet::Ack *DataHandler::process(State &s, packet::DataPack &packet) {
+using std::cout;
+using std::endl;
+
+STATUS DataHandler::process(State &s, packet::Basic &packet,packet::Ack& out_pack) {
+    packet::DataPack data_pack = reinterpret_cast<const packet::Data &>(packet);
 
     int opcode = ntohs(packet.opcode);
     if(opcode != Opcode::DATA_OPCODE){
-        // need to throw error
-        return nullptr;
+        cout<<"wrong OP"<<endl;
+        return STATUS::ERROR;
     }
-    int block_number = ntohs(packet.block_number);
+    int block_number = ntohs(data_pack.block_number);
     if(!s.checkBlock(block_number)){
-        // need to throw apropriate error
-        return nullptr;
+        cout<<"wrong block"<<endl;
+        return STATUS::ERROR;
     }
-    cout<<"IN: DATA,"<<block_number<<", "<<size_written<<endl;
+    cout<<"IN: DATA,"<<block_number<<", "<<s.curr_pack_len<<endl;
 
     int size_of_data = s.curr_pack_len - 4;
-    int size_written = fwrite(((void*)packet,1,size_of_data,s.fd);
+    int size_written = fwrite((void*)&packet,1,size_of_data,s.fd);
 
     cout<<"WRITING: "<<size_written;
 
-    packet::Ack pack = {block_number+1};
-    return pack;
+    out_pack.block_number +=1;
+
+    return STATUS::OK;
 };

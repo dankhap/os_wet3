@@ -1,13 +1,19 @@
 cmake_minimum_required(VERSION 3.15)
-project(ttftps)
+project(os_wet3)
 
-set(CMAKE_CXX_STANDARD 11)
-# removed pedentic erros and WERROR for now... TODO: bring back before submission
-set(CMAKE_CXX_FLAGS "-Wall  -DNDEBUG -std=c++11 -pthread")
+set(CMAKE_CXX_STANDARD 14)
 
-add_executable (ttftps main.cpp wrq_handler.cpp server.cpp packets.h state.cpp state.h handler.h data_handler.cpp data_handler.h wrq_handler.cpp wrq_handler.h)
+include_directories(.)
 
-
-# Link the executable to the Hello library. Since the Hello library has
-# public include directories we will use those link directories when building
-# helloDemo
+add_executable(os_wet3
+        data_handler.cpp
+        data_handler.h
+        handler.h
+        main.cpp
+        packets.h
+        server.cpp
+        server.h
+        state.cpp
+        state.h
+        wrq_handler.cpp
+        wrq_handler.h)

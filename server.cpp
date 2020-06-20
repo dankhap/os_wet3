@@ -32,16 +32,14 @@ void Server::run() {
                 &addr_len);
         if(s.curr_pack_len <= 0)
             continue;
-        cout<<"got write request"<<endl;
-        packet::Ack* response = handlers[s.next]->process(s, packet);
-        if(!response)
+        cout<<"got write request after first do"<< "data len"<<s.curr_pack_len<<endl;
+        s.state = handlers[s.next]->process(s, packet,out);
+        if(s.state != STATUS::OK)
             continue;
-        sendto(sock, (const char *)response, sizeof(*response),
+        sendto(sock, (const char *)&out, sizeof(out),
                MSG_CONFIRM, (const struct sockaddr *) &client_aadr,
                addr_len);
-
-        printACK(response);
-        packet::DataPack data_pack = {0};
+        printACK(out);
         do
         {
             do
@@ -53,19 +51,20 @@ void Server::run() {
                     }
                     // TODO: Wait WAIT_FOR_PACKET_TIMEOUT to see if something appears
                     // for us at the socket (we are waiting for DATA)
-                    s.curr_pack_len = recvfrom(sock, &data_pack, MAX_PACK_SIZE, 0,
+                    cout<<"prior to first data"<<" data len "<<s.curr_pack_len <<endl;
+                    s.curr_pack_len = recvfrom(sock, &packet, MAX_PACK_SIZE, 0,
                                                  (struct sockaddr *) &client_aadr,
                                                  &addr_len);
-
-
+                    cout<<"after to first data"<<" data len "<<s.curr_pack_len <<endl;
 
                     if (s.curr_pack_len > 0)// TODO: if there was something at the socket and
                         // we are here not because of a timeout
                     {
                         // TODO: Read the DATA packet from the socket (at
                         // least we hope this is a DATA packet)
-                        response = handlers[s.next]->process(s, data_pack);
-                        printACK(response);
+                        cout<<"int write data"<<" data len "<<s.curr_pack_len <<endl;
+                        s.state = handlers[s.next]->process(s, packet,out);
+                        printACK(out);
                     }
                     if (s.curr_pack_len < 0) // TODO: Time out expired while waiting for data
                     //to appear at the socket
@@ -122,6 +121,7 @@ Server::Server(int port_num) {
         exit(1);
     }
     server_alive = false;
+
 
 }
 

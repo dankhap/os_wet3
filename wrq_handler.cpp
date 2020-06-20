@@ -9,11 +9,11 @@
 
 using namespace std;
 
-packet::Ack *WRQHandler::process(State &s, packet::Basic &p) {
+STATUS WRQHandler::process(State &s, packet::Basic &p,packet::Ack & out_pack) {
     p.opcode = ntohs(p.opcode);
     if(p.opcode != Opcode::WRQ_OPCODE){
         cout<<"not the right opcode"<<endl;
-        return nullptr;
+        return STATUS::ERROR;
     }
     char name[MAX_PACK_SIZE];
     char protocol [MAX_PACK_SIZE];
@@ -23,9 +23,11 @@ packet::Ack *WRQHandler::process(State &s, packet::Basic &p) {
     strcpy(protocol, (p.data + strlen(name) + 1));
     cout<<"IN: WRQ,"<<name<<", "<<protocol<<endl;
 
-    packet::Ack pack ={0};
-
     s.fd = fopen(name,"w+");
+    if(s.fd == nullptr){
+        cout<<"file didnt open";
+        exit(1);
+    }
     s.next = DATA_OPCODE;
-    return pack;
+    return STATUS::OK;
 }

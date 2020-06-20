@@ -15,6 +15,11 @@ enum Opcode {
     ERR_OPCODE=5
 };
 
+typedef enum STATUS_t{
+    OK = 0,
+    ERROR,
+}STATUS;
+
 #define MAX_PACK_SIZE 516
 namespace packet {
     typedef struct Basic {

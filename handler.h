@@ -11,7 +11,7 @@
 
 class Handler {
 public:
-    virtual packet::Ack* process(State& s, packet::Basic& packet) = 0;
+    virtual STATUS process(State& s, packet::Basic& packet,packet::Ack& out_pack) = 0;
 
 };
 

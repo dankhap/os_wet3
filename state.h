@@ -10,6 +10,7 @@
 
 class State {
 public:
+    STATUS state = {OK};
     unsigned int curr_pack_len;
     FILE* fd;
     State();
