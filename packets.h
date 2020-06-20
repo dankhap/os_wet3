@@ -8,13 +8,16 @@
 #include <cstdint>
 #include <cstring>
 
-using std::string;
+enum Opcode {
+    WRQ_OPCODE=2,
+    DATA_OPCODE=3,
+    ACK_OPCODE=4,
+    ERR_OPCODE=5
+};
 
-#define WRQ_OPCODE 2
-#define DATA_OPCODE 3
-#define ACK_OPCODE 4
-#define ERR_OPCODE 5
 #define MAX_PACK_SIZE 516
+
+
 
 typedef struct AckPack{
     uint16_t opcode;
