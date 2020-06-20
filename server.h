@@ -5,13 +5,29 @@
 #ifndef OS_WET3_SERVER_H
 #define OS_WET3_SERVER_H
 
-#include "runnable.h"
+
 #include <string>
-class Server : public Runnable{
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include "packets.h"
+
+
+
+
+
+class Server {
 
 public:
-    explicit Server(std::string hostname);
-    void run() override;
+    explicit Server(int port_num);
+    void run() ;
+    int sock;
+    int msg_size;
+    struct sockaddr_in server_addr;
+    struct sockaddr_in client_aadr;
+    uint16_t client_addr_len;
+    WriteRequest write_request;
 };
 
 
