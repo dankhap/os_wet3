@@ -28,5 +28,12 @@
 
 # Executables
 *.exe
-*.out
+#*.out
 *.app
+
+.idea/
+cmake-build-debug/
+*.json
+
+
+ttftps
