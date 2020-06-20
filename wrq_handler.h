@@ -9,7 +9,7 @@
 #include "handler.h"
 
 class WRQHandler : public Handler {
-    packet::Basic* process(State& s, packet::Basic& packet) override;
+    packet::Ack * process(State& s, packet::Basic& packet) override;
 
 };
 

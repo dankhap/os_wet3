@@ -34,10 +34,10 @@ void Server::run() {
             continue;
         cout<<"got write request"<<endl;
         Handler* handler = handlers[s.next];
-        packet::Basic* response = handler->process(s, packet);
+        packet::Ack* response = handler->process(s, packet);
         if(!response)
             continue;
-        sendto(sock, (const char *)response, strlen(response->data),
+        sendto(sock, (const char *)response, sizeof(*response),
                MSG_CONFIRM, (const struct sockaddr *) &client_aadr,
                addr_len);
         do

@@ -11,7 +11,7 @@
 
 class DataHandler : public Handler{
 public:
-    packet::Basic* process(State& s, packet::Basic& packet) override;
+    packet::Ack * process(State& s, packet::Basic& packet) override;
 
 };
 

@@ -9,7 +9,7 @@
 
 using namespace std;
 
-packet::Basic *WRQHandler::process(State &s, packet::Basic &p) {
+packet::Ack *WRQHandler::process(State &s, packet::Basic &p) {
     if(p.opcode != Opcode::WRQ_OPCODE)
         return nullptr;
     char name[MAX_PACK_SIZE];

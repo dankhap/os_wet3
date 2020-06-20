@@ -4,6 +4,6 @@
 
 #include "data_handler.h"
 
-packet::Basic *DataHandler::process(State &s, packet::Basic &packet) {
+packet::Ack *DataHandler::process(State &s, packet::Basic &packet) {
     return nullptr;
 }
