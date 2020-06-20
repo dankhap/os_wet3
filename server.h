@@ -19,6 +19,7 @@
 class Server {
 
 public:
+    void printACK(packet::Ack pack);
     explicit Server(int port_num);
     void run() ;
 private:

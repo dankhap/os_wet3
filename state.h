@@ -10,10 +10,12 @@
 
 class State {
 public:
+    unsigned int curr_pack_len;
+    FILE* fd;
     State();
     int reset();
     Opcode next;
-
+    bool checkBlock(int block_num);
 private:
     unsigned int next_block;
     std::string filename;

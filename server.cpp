@@ -27,10 +27,10 @@ void Server::run() {
         // establish connection with client and get WRQ packet
         socklen_t addr_len = sizeof(client_aadr);
         packet::Basic packet = {0};
-        int write_req_len = recvfrom(sock, &packet, MAX_PACK_SIZE, 0,
+        s.curr_pack_len = recvfrom(sock, &packet, MAX_PACK_SIZE, 0,
                 (struct sockaddr *) &client_aadr,
                 &addr_len);
-        if(write_req_len <= 0)
+        if(s.curr_pack_len <= 0)
             continue;
         cout<<"got write request"<<endl;
         packet::Ack* response = handlers[s.next]->process(s, packet);
@@ -39,9 +39,11 @@ void Server::run() {
         sendto(sock, (const char *)response, sizeof(*response),
                MSG_CONFIRM, (const struct sockaddr *) &client_aadr,
                addr_len);
+
+        printACK(response);
+        packet::DataPack data_pack = {0};
         do
         {
-            timeoutExpiredCount = NUMBER_OF_FAILURES;
             do
             {
                 do
@@ -51,31 +53,31 @@ void Server::run() {
                     }
                     // TODO: Wait WAIT_FOR_PACKET_TIMEOUT to see if something appears
                     // for us at the socket (we are waiting for DATA)
-                    write_req_len = recvfrom(sock, &packet, MAX_PACK_SIZE, 0,
+                    s.curr_pack_len = recvfrom(sock, &data_pack, MAX_PACK_SIZE, 0,
                                                  (struct sockaddr *) &client_aadr,
                                                  &addr_len);
 
 
 
-                    if (write_req_len > 0)// TODO: if there was something at the socket and
+                    if (s.curr_pack_len > 0)// TODO: if there was something at the socket and
                         // we are here not because of a timeout
                     {
                         // TODO: Read the DATA packet from the socket (at
                         // least we hope this is a DATA packet)
-                        cout<<"got write request"<<endl;
-                        response = handlers[s.next]->process(s, packet);
+                        response = handlers[s.next]->process(s, data_pack);
+                        printACK(response);
                     }
-                    if (write_req_len < 0) // TODO: Time out expired while waiting for data
+                    if (s.curr_pack_len < 0) // TODO: Time out expired while waiting for data
                     //to appear at the socket
                     {
                         //TODO: Send another ACK for the last packet
                         timeoutExpiredCount++;
                     }
-                    if (1)//timeoutExpiredCount>= NUMBER_OF_FAILURES)
+                    if (timeoutExpiredCount>=NUMBER_OF_FAILURES)//timeoutExpiredCount>= NUMBER_OF_FAILURES)
                     {
                         // FATAL ERROR BAIL OUT
                     }
-                }while (0) ;// TODO: Continue while some socket was ready
+                }while (s.curr_pack_len < 0) ;// TODO: Continue while some socket was ready
                   //but recvfrom somehow failed to read the data
                 if (0) // TODO: We got something else but DATA
                 {
@@ -121,6 +123,8 @@ Server::Server(int port_num) {
     }
     server_alive = false;
 
+}
 
-
+void Server::printACK(packet::Ack pack) {
+    cout<<"OUT:ACK, "<<pack.block_number<<endl;
 }
