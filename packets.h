@@ -20,6 +20,7 @@ typedef enum STATUS_t{
     OP_CODE_ERROR,
     BLOCK_NUM_ERROR,
     LAST_PACK,
+    FILE_WRITE_ERROR,
 }STATUS;
 
 #define MAX_PACK_SIZE 516
