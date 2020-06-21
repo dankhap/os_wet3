@@ -14,7 +14,7 @@ public:
     int reset();
 
     STATUS state = {OK};
-    unsigned int curr_pack_len;
+    int curr_pack_len;
     Opcode next;
     bool checkBlock(uint16_t block_num);
     int ack_num;

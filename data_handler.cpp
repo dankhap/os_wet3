@@ -11,6 +11,7 @@ using std::endl;
 
 STATUS DataHandler::process(State &s, packet::Basic &packet,packet::Ack& out_pack) {
 
+    cout << "processing data packet size " << s.curr_pack_len << endl;
     packet::DataPack data_pack = reinterpret_cast<const packet::Data &>(packet);
     data_pack.opcode = ntohs( data_pack.opcode);
     if(data_pack.opcode != Opcode::DATA_OPCODE){

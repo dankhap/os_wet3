@@ -15,22 +15,26 @@ STATUS WRQHandler::process(State &s, packet::Basic &p,packet::Ack & out_pack) {
         cout<<"not the right opcode"<<endl;
         return STATUS::OP_CODE_ERROR;
     }
-    char name[MAX_PACK_SIZE];
-    char protocol [MAX_PACK_SIZE];
-    //cout<<ntohs(p.opcode)<<endl;
-    p.data[MAX_PACK_SIZE-3]='\0';
-    strcpy(name, p.data);
-    strcpy(protocol, (p.data + strlen(name) + 1));
-    cout<<"IN: WRQ,"<<name<<", "<<protocol<<endl;
 
-    FILE* fd = fopen(name,"w+");
+    p.data[MAX_PACK_SIZE-3]='\0';
+    string name(p.data);
+    string protocol(p.data + name.length() + 1);
+    cout<<"IN: WRQ,"<< name<<", "<<protocol<<endl;
+    if(protocol != "octet"){
+        cout << "not supported protocol:" << protocol << endl;
+        return STATUS::FILE_WRITE_ERROR;
+    }
+    FILE* fd = fopen(name.c_str(),"w+");
     if(fd == nullptr){
         cout<<"file didnt open";
         return STATUS::FILE_WRITE_ERROR;
     }
     fclose(fd);
     s.next = DATA_OPCODE;
+    s.setFilename(name);
+    s.setProtocol(protocol);
     out_pack.opcode = htons(Opcode::ACK_OPCODE);
     out_pack.block_number = htons(s.ack_num);
+
     return STATUS::OK;
 }
