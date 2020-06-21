@@ -97,8 +97,9 @@ void Server::run() {
 
                 if (s.state == STATUS::OP_CODE_ERROR) // We got something else but DATA
                 {
+                    PRINT_ERROR_OPCODE();
                     session_in_progress = false;
-                    break;
+                    goto NEXTSESS;
                     // FATAL ERROR BAIL OUT
                 }
                 if (s.state == STATUS::BLOCK_NUM_ERROR)
@@ -106,19 +107,27 @@ void Server::run() {
                      //expected, i.e. this is a DATA pkt but the block number
                      //in DATA was wrong (not last ACK’s block number + 1)
                 {
+                    PRINT_ERROR_BLOCK();
                     session_in_progress = false;
-                    break;
+                    goto NEXTSESS;
                      //FATAL ERROR BAIL OUT
                 }
             }while (timeoutExpiredCount < NUMBER_OF_FAILURES && (s.state!= STATUS::OK && s.state!= STATUS::LAST_PACK));
             if(s.state == LAST_PACK){
                 session_in_progress = false;
             }
+            if(s.state == STATUS::TIMEOUT_ERROR){
+                PRINT_ERROR_TIMEOUT();
+                session_in_progress = false;
+                goto NEXTSESS;
+            }
             sendto(sock, (const char *)&ack, sizeof(ack),
                    MSG_CONFIRM, (const struct sockaddr *) &client_aadr,
                    addr_len);
             printACK(ack);
+            NEXTSESS:;
         }while (session_in_progress); // Have blocks left to be read from client (not end of transmission)
+        if(s.state == LAST_PACK) cout<<"RECVOK"<<endl;
         s.reset();
     }while (server_alive);
 
@@ -163,4 +172,17 @@ int Server::writeTofile(packet::Basic &packet) {
     fclose(fd);
     cout<<"WRITING: "<<size_written<<endl;
     return size_written;
+}
+
+void Server::PRINT_ERROR_OPCODE() {
+    cout<<"FLOWERROR: unexpected opcode arrived, termination connection..."<<endl;
+
+}
+
+void Server::PRINT_ERROR_BLOCK() {
+    cout<<"FLOWERROR: unexpected block number arrived, termination connection..."<<endl;
+}
+
+void Server::PRINT_ERROR_TIMEOUT() {
+    cout<<"FLOWERROR: Time out occured for the 7th time, termination connection..."<<endl;
 }

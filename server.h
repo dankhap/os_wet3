@@ -23,6 +23,9 @@ public:
     void printACK(packet::Ack pack);
     explicit Server(int port_num);
     void run() ;
+    void PRINT_ERROR_OPCODE();
+    void PRINT_ERROR_BLOCK();
+    void PRINT_ERROR_TIMEOUT();
 private:
     std::map<Opcode, Handler*> handlers;
     State s;
