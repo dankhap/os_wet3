@@ -55,33 +55,32 @@ void Server::run() {
             {
                 do
                 {
-                    cout << "started waiting for data" << endl;
                     struct timeval tv{};
                     tv.tv_sec = WAIT_FOR_PACKET_TIMEOUT;
                     tv.tv_usec = 0;
                     s.curr_pack_len = 0;
                     FD_ZERO(&readset);
                     FD_SET(sock, &readset);
-                    result = select(sock + 1, &readset, nullptr, nullptr, &tv);
-                    // TODO: Wait WAIT_FOR_PACKET_TIMEOUT to see if something appears
+                    // Wait WAIT_FOR_PACKET_TIMEOUT to see if something appears
                     // for us at the socket (we are waiting for DATA)
+                    result = select(sock + 1, &readset, nullptr, nullptr, &tv);
 
-                    if (FD_ISSET(sock, &readset)) // TODO: if there was something at the socket and
-                        // we are here not because of a timeout
+                    // if there was something at the socket and
+                    // we are here not because of a timeout
+                    if (FD_ISSET(sock, &readset))
                     {
-                        cout << "got packet" << endl;
-                        // TODO: Read the DATA packet from the socket (at
+                        // Read the DATA packet from the socket (at
                         // least we hope this is a DATA packet)
-                        packet::Basic data_pkt = {0};
-                        s.curr_pack_len = recvfrom(sock, &data_pkt, MAX_PACK_SIZE, 0,
+                        s.curr_pack_len = recvfrom(sock, &packet, MAX_PACK_SIZE, 0,
                                                    (struct sockaddr *) &client_aadr,
                                                    &addr_len);
-                        s.state = handlers[s.next]->process(s, data_pkt, ack);
+                        s.state = handlers[s.next]->process(s, packet, ack);
                     }
-                    if (result == 0) // TODO: Time out expired while waiting for data
+                    // Time out expired while waiting for data
                     //to appear at the socket
+                    if (result == 0)
                     {
-                        //TODO: Send another ACK for the last packet
+                        //Send another ACK for the last packet
                         sendto(sock, &ack, sizeof(ack), 0, (struct sockaddr *) &client_aadr,
                                addr_len);
                         timeoutExpiredCount++;
@@ -92,17 +91,20 @@ void Server::run() {
                         session_in_progress = false;
                         break;
                     }
-                }while (s.curr_pack_len <= 0 && s.state != STATUS::TIMEOUT_ERROR) ;// TODO: Continue while some socket was ready
-                  //but recvfrom somehow failed to read the data
-                if (s.state == STATUS::OP_CODE_ERROR) // TODO: We got something else but DATA
+                    // Continue while some socket was ready
+                    //but recvfrom somehow failed to read the data
+                }while (s.curr_pack_len <= 0 && s.state != STATUS::TIMEOUT_ERROR) ;
+
+                if (s.state == STATUS::OP_CODE_ERROR) // We got something else but DATA
                 {
                     session_in_progress = false;
                     break;
                     // FATAL ERROR BAIL OUT
                 }
-                if (s.state == STATUS::BLOCK_NUM_ERROR) // TODO: The incoming block number is not what we have
-                 //expected, i.e. this is a DATA pkt but the block number
-                 //in DATA was wrong (not last ACK’s block number + 1)
+                if (s.state == STATUS::BLOCK_NUM_ERROR)
+                     // The incoming block number is not what we have
+                     //expected, i.e. this is a DATA pkt but the block number
+                     //in DATA was wrong (not last ACK’s block number + 1)
                 {
                     session_in_progress = false;
                     break;
@@ -117,7 +119,6 @@ void Server::run() {
                    addr_len);
             printACK(ack);
         }while (session_in_progress); // Have blocks left to be read from client (not end of transmission)
-        cout << "session ended successfully" << endl;
         s.reset();
     }while (server_alive);
 
