@@ -20,7 +20,6 @@ class Server {
 
 public:
     int writeTofile(packet::Basic& packet);
-    packet::Ack out={0};
     void printACK(packet::Ack pack);
     explicit Server(int port_num);
     void run() ;

@@ -7,6 +7,7 @@
 
 #include <cstdint>
 #include <string>
+#include <netinet/in.h>
 
 enum Opcode {
     WRQ_OPCODE=2,
@@ -21,6 +22,7 @@ typedef enum STATUS_t{
     BLOCK_NUM_ERROR,
     LAST_PACK,
     FILE_WRITE_ERROR,
+    TIMEOUT_ERROR,
 }STATUS;
 
 #define MAX_PACK_SIZE 516
@@ -31,8 +33,10 @@ namespace packet {
     }__attribute__((packed)) Basic;
 
     typedef struct Ack {
-        Ack(uint16_t b_number): block_number(b_number){}
-        uint16_t opcode=ACK_OPCODE;
+        explicit Ack(uint16_t b_number=0): block_number(b_number){
+            opcode = htons(Opcode::ACK_OPCODE);
+        }
+        uint16_t opcode;
         uint16_t block_number{};
     }__attribute__((packed)) Ack;
 

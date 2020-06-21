@@ -5,16 +5,16 @@
 #include "state.h"
 
 
-State::State() :curr_pack_len(0), next(Opcode::WRQ_OPCODE), ack_num(0), next_block(0), data(nullptr){
+State::State() :curr_pack_len(0), next(Opcode::WRQ_OPCODE), ack_num(0), next_block(0){
 
 }
 
 int State::reset() {
     next = Opcode::WRQ_OPCODE;
     next_block = 0;
-    if(data != nullptr)
-        delete data;
     filename="";
+    protocol="";
+    ack_num=0;
     return 1;
 }
 

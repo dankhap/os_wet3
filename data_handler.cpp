@@ -6,8 +6,7 @@
 #include <iostream>
 #include <netinet/in.h>
 
-using std::cout;
-using std::endl;
+using namespace std;
 
 STATUS DataHandler::process(State &s, packet::Basic &packet,packet::Ack& out_pack) {
 
@@ -21,15 +20,30 @@ STATUS DataHandler::process(State &s, packet::Basic &packet,packet::Ack& out_pac
     uint16_t block_number = ntohs(data_pack.block_number);
     if(!s.checkBlock(block_number)){
         cout<<"wrong block"<<endl;
+        out_pack.block_number = htons(s.ack_num - 1);
         return STATUS::BLOCK_NUM_ERROR;
     }
     cout<<"IN: DATA,"<<block_number<<", "<<s.curr_pack_len<<endl;
     s.ack_num+=1;
-    out_pack.opcode = htons(Opcode::ACK_OPCODE);
     out_pack.block_number = htons(s.ack_num);
     if(s.curr_pack_len < MAX_PACK_SIZE){
+
         return STATUS::LAST_PACK;
     }
-
+    int size_of_data = s.curr_pack_len - 4;
+    int res = writeTofile(s.getFilename().c_str(), (void*)&data_pack.data, size_of_data);
+    if(res < 0){
+        out_pack.block_number = htons(s.ack_num - 1);
+        return STATUS::FILE_WRITE_ERROR;
+    }
     return STATUS::OK;
+}
+
+int DataHandler::writeTofile(const char* filename, void* data, int size_of_data) {
+    cout<<"size of last data is "<< size_of_data<<endl;
+    FILE* fd = fopen(filename, "a");
+    int size_written = fwrite(data,1, size_of_data, fd);
+    fclose(fd);
+    cout<<"WRITING: "<<size_written<<endl;
+    return size_written;
 }

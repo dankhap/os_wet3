@@ -12,16 +12,18 @@ class State {
 public:
     State();
     int reset();
+    bool checkBlock(uint16_t block_num);
 
     STATUS state = {OK};
     int curr_pack_len;
     Opcode next;
-    bool checkBlock(uint16_t block_num);
     int ack_num;
 
 private:
-    unsigned int next_block;
+    std::string protocol;
     std::string filename;
+    unsigned int next_block;
+
 public:
     const std::string &getFilename() const;
 
@@ -32,8 +34,8 @@ public:
     void setProtocol(const std::string &protocol);
 
 private:
-    std::string protocol;
-    char* data;
+
+
 };
 
 

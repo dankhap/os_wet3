@@ -2,11 +2,12 @@
 // Created by daniel on 11/06/2020.
 //
 
+#include <iostream>
+#include <cstring>
+#include <sys/select.h>
 #include "server.h"
 #include "data_handler.h"
 #include "wrq_handler.h"
-#include <iostream>
-#include <cstring>
 
 
 using std::cout;
@@ -17,82 +18,107 @@ void Server::run() {
     const int WAIT_FOR_PACKET_TIMEOUT = 3;
     const int NUMBER_OF_FAILURES = 7;
     bool session_in_progress = false;
-    struct timeval tv{};
-    tv.tv_sec = 0;
-    tv.tv_usec = WAIT_FOR_PACKET_TIMEOUT*100000;
+
     server_alive = true;
     int timeoutExpiredCount = 0;
+    fd_set readset;
+    int result = 0;
     do
     {
         // establish connection with client and get WRQ packet
         socklen_t addr_len = sizeof(client_aadr);
         packet::Basic packet = {0};
+        packet::Ack ack(0);
+        FD_ZERO(&readset);
+        FD_SET(sock, &readset);
+        if(-1 == select(sock + 1, &readset, nullptr, nullptr, nullptr))
+        {
+            cout << "failed to select, server closes, errno:" << errno << endl;
+            exit(1);
+        }
         s.curr_pack_len = recvfrom(sock, &packet, MAX_PACK_SIZE, 0,
                 (struct sockaddr *) &client_aadr,
                 &addr_len);
         if(s.curr_pack_len <= 0)
             continue;
-        s.state = handlers[s.next]->process(s, packet,out);
+        s.state = handlers[s.next]->process(s, packet, ack);
         if(s.state != STATUS::OK)
             continue;
-        sendto(sock, (const char *)&out, sizeof(out),
+        session_in_progress = true;
+        sendto(sock, (const char *)&ack, sizeof(ack),
                MSG_CONFIRM, (const struct sockaddr *) &client_aadr,
                addr_len);
-        printACK(out);
+        printACK(ack);
         do
         {
             do
             {
                 do
                 {
-                    if (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO,&tv,sizeof(tv)) < 0) {
-                        perror("Error");
-                    }
+                    cout << "started waiting for data" << endl;
+                    struct timeval tv{};
+                    tv.tv_sec = WAIT_FOR_PACKET_TIMEOUT;
+                    tv.tv_usec = 0;
+                    s.curr_pack_len = 0;
+                    FD_ZERO(&readset);
+                    FD_SET(sock, &readset);
+                    result = select(sock + 1, &readset, nullptr, nullptr, &tv);
                     // TODO: Wait WAIT_FOR_PACKET_TIMEOUT to see if something appears
                     // for us at the socket (we are waiting for DATA)
-                    s.curr_pack_len = recvfrom(sock, &packet, MAX_PACK_SIZE, 0,
-                                                 (struct sockaddr *) &client_aadr,
-                                                 &addr_len);
 
-                    if (s.curr_pack_len > 0)// TODO: if there was something at the socket and
+                    if (FD_ISSET(sock, &readset)) // TODO: if there was something at the socket and
                         // we are here not because of a timeout
                     {
+                        cout << "got packet" << endl;
                         // TODO: Read the DATA packet from the socket (at
                         // least we hope this is a DATA packet)
-                        s.state = handlers[s.next]->process(s, packet,out);
+                        packet::Basic data_pkt = {0};
+                        s.curr_pack_len = recvfrom(sock, &data_pkt, MAX_PACK_SIZE, 0,
+                                                   (struct sockaddr *) &client_aadr,
+                                                   &addr_len);
+                        s.state = handlers[s.next]->process(s, data_pkt, ack);
                     }
-                    if (s.curr_pack_len < 0) // TODO: Time out expired while waiting for data
+                    if (result == 0) // TODO: Time out expired while waiting for data
                     //to appear at the socket
                     {
                         //TODO: Send another ACK for the last packet
+                        sendto(sock, &ack, sizeof(ack), 0, (struct sockaddr *) &client_aadr,
+                               addr_len);
                         timeoutExpiredCount++;
                     }
-                    if (timeoutExpiredCount>=NUMBER_OF_FAILURES)//timeoutExpiredCount>= NUMBER_OF_FAILURES)
+                    if (timeoutExpiredCount>=NUMBER_OF_FAILURES)
                     {
-                        // FATAL ERROR BAIL OUT
+                        s.state = STATUS::TIMEOUT_ERROR;
+                        session_in_progress = false;
+                        break;
                     }
-                }while (s.curr_pack_len < 0) ;// TODO: Continue while some socket was ready
+                }while (s.curr_pack_len <= 0 && s.state != STATUS::TIMEOUT_ERROR) ;// TODO: Continue while some socket was ready
                   //but recvfrom somehow failed to read the data
                 if (s.state == STATUS::OP_CODE_ERROR) // TODO: We got something else but DATA
                 {
+                    session_in_progress = false;
+                    break;
                     // FATAL ERROR BAIL OUT
                 }
                 if (s.state == STATUS::BLOCK_NUM_ERROR) // TODO: The incoming block number is not what we have
                  //expected, i.e. this is a DATA pkt but the block number
                  //in DATA was wrong (not last ACK’s block number + 1)
                 {
+                    session_in_progress = false;
+                    break;
                      //FATAL ERROR BAIL OUT
                 }
-            }while (timeoutExpiredCount < NUMBER_OF_FAILURES && (s.state!= STATUS::OK || s.state!= STATUS::LAST_PACK));
+            }while (timeoutExpiredCount < NUMBER_OF_FAILURES && (s.state!= STATUS::OK && s.state!= STATUS::LAST_PACK));
             if(s.state == LAST_PACK){
                 session_in_progress = false;
             }
-            writeTofile(packet);
-            sendto(sock, (const char *)&out, sizeof(out),
+            sendto(sock, (const char *)&ack, sizeof(ack),
                    MSG_CONFIRM, (const struct sockaddr *) &client_aadr,
                    addr_len);
-            printACK(out);
+            printACK(ack);
         }while (session_in_progress); // Have blocks left to be read from client (not end of transmission)
+        cout << "session ended successfully" << endl;
+        s.reset();
     }while (server_alive);
 
 }

@@ -9,10 +9,12 @@
 #include "state.h"
 #include "handler.h"
 
-class DataHandler : public Handler{
+class DataHandler : public Handler {
 public:
-    STATUS  process(State& s, packet::Basic& packet,packet::Ack& out_pack) override ;
+    STATUS process(State &s, packet::Basic &packet, packet::Ack &out_pack) override;
 
+private:
+    static int writeTofile(const char *filename, void *data, int data_size);
 };
 
 
