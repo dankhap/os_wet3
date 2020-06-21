@@ -10,17 +10,28 @@
 
 class State {
 public:
-    STATUS state = {OK};
-    unsigned int curr_pack_len;
-    FILE* fd;
     State();
     int reset();
+
+    STATUS state = {OK};
+    unsigned int curr_pack_len;
     Opcode next;
     bool checkBlock(uint16_t block_num);
     int ack_num;
+
 private:
     unsigned int next_block;
     std::string filename;
+public:
+    const std::string &getFilename() const;
+
+    void setFilename(const std::string &filename);
+
+    const std::string &getProtocol() const;
+
+    void setProtocol(const std::string &protocol);
+
+private:
     std::string protocol;
     char* data;
 };

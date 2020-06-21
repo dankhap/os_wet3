@@ -102,7 +102,7 @@ Server::Server(int port_num) {
     handlers[Opcode::WRQ_OPCODE] = new WRQHandler();
     handlers[Opcode::DATA_OPCODE] = new DataHandler();
     // initilize socket
-    if((sock = socket(PF_INET,SOCK_DGRAM,0))<0){
+    if((sock = socket(PF_INET,SOCK_DGRAM,IPPROTO_UDP))<0){
         cout<<errno;
         exit(1);
     }
@@ -111,9 +111,9 @@ Server::Server(int port_num) {
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     server_addr.sin_port = htons(port_num);
-
-    if(bind(sock,(struct sockaddr*) &server_addr, sizeof(server_addr)) < 0 ){
-        cout<<"something wrong in bind";
+    int res = bind(sock,(struct sockaddr*) &server_addr, sizeof(server_addr));
+    if( res < 0 ){
+        cout<<"something wrong in bind, err:" << errno << endl;
         exit(1);
     }
     server_alive = false;
@@ -129,12 +129,11 @@ void Server::printACK(packet::Ack pack) {
 
 int Server::writeTofile(packet::Basic &packet) {
     packet::DataPack data_pack = reinterpret_cast<const packet::Data &>(packet);
-    int block_number = ntohs(data_pack.block_number);
-
-   int size_of_data = s.curr_pack_len - 4;
-   cout<<"size of last data is "<< size_of_data<<endl;
-   int size_written = fwrite((void*)&data_pack.data,1,size_of_data,s.fd);
-
-   cout<<"WRITING: "<<size_written<<endl;
+    int size_of_data = s.curr_pack_len - 4;
+    cout<<"size of last data is "<< size_of_data<<endl;
+    FILE* fd = fopen(s.getFilename().c_str(), "a");
+    int size_written = fwrite((void*)&data_pack.data,1, size_of_data, fd);
+    fclose(fd);
+    cout<<"WRITING: "<<size_written<<endl;
     return size_written;
 }

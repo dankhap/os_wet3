@@ -4,7 +4,8 @@
 
 #include "state.h"
 
-State::State() :next(Opcode::WRQ_OPCODE), next_block(0), data(nullptr),curr_pack_len(0),ack_num(0){
+
+State::State() :curr_pack_len(0), next(Opcode::WRQ_OPCODE), ack_num(0), next_block(0), data(nullptr){
 
 }
 
@@ -23,4 +24,20 @@ bool State::checkBlock(uint16_t block_num) {
     }
     next_block+=1;
     return true;
+}
+
+const std::string &State::getFilename() const {
+    return filename;
+}
+
+void State::setFilename(const std::string &fname) {
+    State::filename = fname;
+}
+
+const std::string &State::getProtocol() const {
+    return protocol;
+}
+
+void State::setProtocol(const std::string &proto) {
+    State::protocol = proto;
 }

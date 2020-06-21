@@ -23,11 +23,12 @@ STATUS WRQHandler::process(State &s, packet::Basic &p,packet::Ack & out_pack) {
     strcpy(protocol, (p.data + strlen(name) + 1));
     cout<<"IN: WRQ,"<<name<<", "<<protocol<<endl;
 
-    s.fd = fopen(name,"w+");
-    if(s.fd == nullptr){
+    FILE* fd = fopen(name,"w+");
+    if(fd == nullptr){
         cout<<"file didnt open";
-        exit(1);
+        return STATUS::FILE_WRITE_ERROR;
     }
+    fclose(fd);
     s.next = DATA_OPCODE;
     out_pack.opcode = htons(Opcode::ACK_OPCODE);
     out_pack.block_number = htons(s.ack_num);
