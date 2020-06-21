@@ -129,6 +129,7 @@ void Server::run() {
         }while (session_in_progress); // Have blocks left to be read from client (not end of transmission)
         if(s.state == LAST_PACK) cout<<"RECVOK"<<endl;
         s.reset();
+        timeoutExpiredCount = 0;
     }while (server_alive);
 
 }
@@ -153,7 +154,6 @@ Server::Server(int port_num) {
         exit(1);
     }
     server_alive = false;
-
 
 }
 
