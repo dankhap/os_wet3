@@ -12,7 +12,6 @@ using namespace std;
 STATUS WRQHandler::process(State &s, packet::Basic &p,packet::Ack & out_pack) {
     p.opcode = ntohs(p.opcode);
     if(p.opcode != Opcode::WRQ_OPCODE){
-        cout<<"not the right opcode"<<endl;
         return STATUS::OP_CODE_ERROR;
     }
 
@@ -21,7 +20,6 @@ STATUS WRQHandler::process(State &s, packet::Basic &p,packet::Ack & out_pack) {
     string protocol(p.data + name.length() + 1);
     cout<<"IN: WRQ,"<< name<<", "<<protocol<<endl;
     if(protocol != "octet"){
-        cout << "not supported protocol:" << protocol << endl;
         return STATUS::PROTOCOL_NOT_SUPPORTED;
     }
     FILE* fd = fopen(name.c_str(),"w+");

@@ -23,6 +23,7 @@ void Server::run() {
 
     int res = bind(sock,(struct sockaddr*) &server_addr, sizeof(server_addr));
     if( res < 0 ){
+        cout<<"TTFTP_ERROR: ";
         cout<<"something wrong in bind, err:" << errno << endl;
         return;
     }
@@ -40,6 +41,7 @@ void Server::run() {
         FD_SET(sock, &readset);
         if(-1 == select(sock + 1, &readset, nullptr, nullptr, nullptr))
         {
+            cout<<"TTFTP_ERROR: ";
             cout << "failed to select, server closes, errno:" << errno << endl;
             exit(1);
         }
@@ -90,7 +92,6 @@ void Server::run() {
                         sendto(sock, &ack, sizeof(ack), 0, (struct sockaddr *) &client_aadr,
                                addr_len);
                         timeoutExpiredCount++;
-                        cout << "got timeout " << timeoutExpiredCount << endl;
                     }
                     if (timeoutExpiredCount>=NUMBER_OF_FAILURES)
                     {
@@ -123,6 +124,7 @@ Server::Server(int port_num) {
     handlers[Opcode::DATA_OPCODE] = new DataHandler();
     // initilize socket
     if((sock = socket(PF_INET,SOCK_DGRAM,IPPROTO_UDP))<0){
+        cout<<"TTFTP_ERROR: ";
         cout<<errno;
         exit(1);
     }
@@ -146,15 +148,19 @@ int Server::print_err(STATUS status) {
             break;
         case FILE_WRITE_ERROR:
             cout<<"WRQERROR: cannot create file on server or packet too large."<<endl;
+            cout<<"RECVFAIL"<<endl;
             break;
         case OP_CODE_ERROR:
             cout<<"FLOWERROR: unexpected opcode arrived, termination connection..."<<endl;
+            cout<<"RECVFAIL"<<endl;
             break;
         case BLOCK_NUM_ERROR:
             cout<<"FLOWERROR: unexpected block number arrived, termination connection..."<<endl;
+            cout<<"RECVFAIL"<<endl;
             break;
         case TIMEOUT_ERROR:
             cout<<"FLOWERROR: Time out occured for the 7th time, termination connection..."<<endl;
+            cout<<"RECVFAIL"<<endl;
             break;
         default:
             return 0;

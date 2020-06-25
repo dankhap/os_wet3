@@ -14,12 +14,10 @@ STATUS DataHandler::process(State &s, packet::Basic &packet,packet::Ack& out_pac
     packet::DataPack data_pack = reinterpret_cast<const packet::Data &>(packet);
     data_pack.opcode = ntohs( data_pack.opcode);
     if(data_pack.opcode != Opcode::DATA_OPCODE){
-        cout<<"wrong OP"<<endl;
         return STATUS::OP_CODE_ERROR;
     }
     uint16_t block_number = ntohs(data_pack.block_number);
     if(!s.checkBlock(block_number)){
-        cout<<"wrong block"<<endl;
         out_pack.block_number = htons(s.ack_num - 1);
         return STATUS::BLOCK_NUM_ERROR;
     }
