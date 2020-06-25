@@ -19,7 +19,6 @@
 class Server {
 
 public:
-    int writeTofile(packet::Basic& packet);
     void printACK(packet::Ack pack);
     explicit Server(int port_num);
     void run() ;

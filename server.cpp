@@ -162,18 +162,6 @@ void Server::printACK(packet::Ack pack) {
 }
 
 
-
-int Server::writeTofile(packet::Basic &packet) {
-    packet::DataPack data_pack = reinterpret_cast<const packet::Data &>(packet);
-    int size_of_data = s.curr_pack_len - 4;
-    cout<<"size of last data is "<< size_of_data<<endl;
-    FILE* fd = fopen(s.getFilename().c_str(), "a");
-    int size_written = fwrite((void*)&data_pack.data,1, size_of_data, fd);
-    fclose(fd);
-    cout<<"WRITING: "<<size_written<<endl;
-    return size_written;
-}
-
 void Server::PRINT_ERROR_OPCODE() {
     cout<<"FLOWERROR: unexpected opcode arrived, termination connection..."<<endl;
 
