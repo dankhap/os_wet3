@@ -19,19 +19,21 @@
 class Server {
 
 public:
-    void printACK(packet::Ack pack);
+    static void printACK(packet::Ack pack);
     explicit Server(int port_num);
     void run() ;
-    void PRINT_ERROR_OPCODE();
-    void PRINT_ERROR_BLOCK();
-    void PRINT_ERROR_TIMEOUT();
+    static int print_err(STATUS status);
+
+    ~Server();
 private:
     std::map<Opcode, Handler*> handlers;
     State s;
     int sock;
-    struct sockaddr_in server_addr;
-    struct sockaddr_in client_aadr;
+    struct sockaddr_in server_addr{};
+    struct sockaddr_in client_aadr{};
     bool server_alive;
+
+
 };
 
 

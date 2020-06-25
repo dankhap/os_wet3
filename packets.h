@@ -16,14 +16,15 @@ enum Opcode {
     ERR_OPCODE=5
 };
 
-typedef enum STATUS_t{
+enum STATUS{
     OK = 0,
     OP_CODE_ERROR,
     BLOCK_NUM_ERROR,
     LAST_PACK,
     FILE_WRITE_ERROR,
     TIMEOUT_ERROR,
-}STATUS;
+    PROTOCOL_NOT_SUPPORTED,
+};
 
 #define MAX_PACK_SIZE 516
 namespace packet {

@@ -22,11 +22,10 @@ STATUS WRQHandler::process(State &s, packet::Basic &p,packet::Ack & out_pack) {
     cout<<"IN: WRQ,"<< name<<", "<<protocol<<endl;
     if(protocol != "octet"){
         cout << "not supported protocol:" << protocol << endl;
-        return STATUS::FILE_WRITE_ERROR;
+        return STATUS::PROTOCOL_NOT_SUPPORTED;
     }
     FILE* fd = fopen(name.c_str(),"w+");
     if(fd == nullptr){
-        cout<<"file didnt open";
         return STATUS::FILE_WRITE_ERROR;
     }
     fclose(fd);

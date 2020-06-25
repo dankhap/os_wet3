@@ -26,28 +26,24 @@ STATUS DataHandler::process(State &s, packet::Basic &packet,packet::Ack& out_pac
     cout<<"IN: DATA,"<<block_number<<", "<<s.curr_pack_len<<endl;
     s.ack_num+=1;
     out_pack.block_number = htons(s.ack_num);
-    if(s.curr_pack_len < MAX_PACK_SIZE ){
-        if(s.curr_pack_len == 4){
-            return STATUS::LAST_PACK;
-        }
-        int res = writeTofile(s.getFilename().c_str(), (void*)&data_pack.data, s.curr_pack_len - 4);
-        if(res<0){
-            return STATUS::FILE_WRITE_ERROR;
-        }
-        return STATUS::LAST_PACK;
-    }
-    int size_of_data = s.curr_pack_len - 4;
-    int res = writeTofile(s.getFilename().c_str(), (void*)&data_pack.data, size_of_data);
-    if(res < 0){
-        cout<<"file error"<<endl;
-        out_pack.block_number = htons(s.ack_num - 1);
+
+    if(s.curr_pack_len > MAX_PACK_SIZE ) {
+        //packet is too large
         return STATUS::FILE_WRITE_ERROR;
     }
-    return STATUS::OK;
+    int size_of_data = s.curr_pack_len - 4;
+    if(size_of_data > 0) {
+        int res = writeTofile(s.getFilename().c_str(), (void*)&data_pack.data, size_of_data);
+        if(res < 0){
+            out_pack.block_number = htons(s.ack_num - 1);
+            return STATUS::FILE_WRITE_ERROR;
+        }
+    }
+    STATUS status = (s.curr_pack_len < MAX_PACK_SIZE) ? STATUS::LAST_PACK : STATUS::OK;
+    return status;
 }
 
 int DataHandler::writeTofile(const char* filename, void* data, int size_of_data) {
-    //cout<<"size of last data is "<< size_of_data<<endl;
     FILE* fd = fopen(filename, "a");
     int size_written = fwrite(data,1, size_of_data, fd);
     fclose(fd);

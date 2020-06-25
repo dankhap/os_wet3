@@ -17,18 +17,25 @@ void Server::run() {
 
     const int WAIT_FOR_PACKET_TIMEOUT = 3;
     const int NUMBER_OF_FAILURES = 7;
-    bool session_in_progress = false;
-
     server_alive = true;
-    int timeoutExpiredCount = 0;
     fd_set readset;
     int result = 0;
+
+    int res = bind(sock,(struct sockaddr*) &server_addr, sizeof(server_addr));
+    if( res < 0 ){
+        cout<<"something wrong in bind, err:" << errno << endl;
+        return;
+    }
+
     do
     {
         // establish connection with client and get WRQ packet
         socklen_t addr_len = sizeof(client_aadr);
         packet::Basic packet = {0};
         packet::Ack ack(0);
+        bool bad_session = false;
+        int timeoutExpiredCount = 0;
+
         FD_ZERO(&readset);
         FD_SET(sock, &readset);
         if(-1 == select(sock + 1, &readset, nullptr, nullptr, nullptr))
@@ -44,7 +51,6 @@ void Server::run() {
         s.state = handlers[s.next]->process(s, packet, ack);
         if(s.state != STATUS::OK)
             continue;
-        session_in_progress = true;
         sendto(sock, (const char *)&ack, sizeof(ack),
                MSG_CONFIRM, (const struct sockaddr *) &client_aadr,
                addr_len);
@@ -84,52 +90,29 @@ void Server::run() {
                         sendto(sock, &ack, sizeof(ack), 0, (struct sockaddr *) &client_aadr,
                                addr_len);
                         timeoutExpiredCount++;
+                        cout << "got timeout " << timeoutExpiredCount << endl;
                     }
                     if (timeoutExpiredCount>=NUMBER_OF_FAILURES)
                     {
                         s.state = STATUS::TIMEOUT_ERROR;
-                        session_in_progress = false;
-                        break;
                     }
                     // Continue while some socket was ready
                     //but recvfrom somehow failed to read the data
                 }while (s.curr_pack_len <= 0 && s.state != STATUS::TIMEOUT_ERROR) ;
 
-                if (s.state == STATUS::OP_CODE_ERROR) // We got something else but DATA
-                {
-                    PRINT_ERROR_OPCODE();
-                    session_in_progress = false;
-                    goto NEXTSESS;
-                    // FATAL ERROR BAIL OUT
-                }
-                if (s.state == STATUS::BLOCK_NUM_ERROR)
-                     // The incoming block number is not what we have
-                     //expected, i.e. this is a DATA pkt but the block number
-                     //in DATA was wrong (not last ACK’s block number + 1)
-                {
-                    PRINT_ERROR_BLOCK();
-                    session_in_progress = false;
-                    goto NEXTSESS;
-                     //FATAL ERROR BAIL OUT
-                }
-            }while (timeoutExpiredCount < NUMBER_OF_FAILURES && (s.state!= STATUS::OK && s.state!= STATUS::LAST_PACK));
-            if(s.state == LAST_PACK){
-                session_in_progress = false;
+            // retry receive if we got timeout but still less then NUMBER_OF_FAILURES
+            }while (s.state != STATUS::TIMEOUT_ERROR && result == 0);
+            bad_session = print_err(s.state);
+            if(!bad_session) {
+                sendto(sock, (const char *) &ack, sizeof(ack),
+                       MSG_CONFIRM, (const struct sockaddr *) &client_aadr,
+                       addr_len);
+                printACK(ack);
             }
-            if(s.state == STATUS::TIMEOUT_ERROR){
-                PRINT_ERROR_TIMEOUT();
-                session_in_progress = false;
-                goto NEXTSESS;
-            }
-            sendto(sock, (const char *)&ack, sizeof(ack),
-                   MSG_CONFIRM, (const struct sockaddr *) &client_aadr,
-                   addr_len);
-            printACK(ack);
-            NEXTSESS:;
-        }while (session_in_progress); // Have blocks left to be read from client (not end of transmission)
+            timeoutExpiredCount = 0;
+        }while (s.state == STATUS::OK); // Have blocks left to be read from client (not end of transmission)
         if(s.state == LAST_PACK) cout<<"RECVOK"<<endl;
         s.reset();
-        timeoutExpiredCount = 0;
     }while (server_alive);
 
 }
@@ -148,11 +131,6 @@ Server::Server(int port_num) {
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     server_addr.sin_port = htons(port_num);
-    int res = bind(sock,(struct sockaddr*) &server_addr, sizeof(server_addr));
-    if( res < 0 ){
-        cout<<"something wrong in bind, err:" << errno << endl;
-        exit(1);
-    }
     server_alive = false;
 
 }
@@ -161,16 +139,28 @@ void Server::printACK(packet::Ack pack) {
     cout<<"OUT:ACK, "<<ntohs(pack.block_number)<<endl;
 }
 
-
-void Server::PRINT_ERROR_OPCODE() {
-    cout<<"FLOWERROR: unexpected opcode arrived, termination connection..."<<endl;
-
+int Server::print_err(STATUS status) {
+    switch(status){
+        case PROTOCOL_NOT_SUPPORTED:
+            cout<<"WRQERROR: unsupported protocol, only octet is supported."<<endl;
+            break;
+        case FILE_WRITE_ERROR:
+            cout<<"WRQERROR: cannot create file on server or packet too large."<<endl;
+            break;
+        case OP_CODE_ERROR:
+            cout<<"FLOWERROR: unexpected opcode arrived, termination connection..."<<endl;
+            break;
+        case BLOCK_NUM_ERROR:
+            cout<<"FLOWERROR: unexpected block number arrived, termination connection..."<<endl;
+            break;
+        case TIMEOUT_ERROR:
+            cout<<"FLOWERROR: Time out occured for the 7th time, termination connection..."<<endl;
+            break;
+        default:
+            return 0;
+    }
+    return 1;
 }
 
-void Server::PRINT_ERROR_BLOCK() {
-    cout<<"FLOWERROR: unexpected block number arrived, termination connection..."<<endl;
-}
-
-void Server::PRINT_ERROR_TIMEOUT() {
-    cout<<"FLOWERROR: Time out occured for the 7th time, termination connection..."<<endl;
+Server::~Server() {
 }
